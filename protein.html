@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Comparison Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Protein Comparison Tool</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="Home.html">Home</a></li>
+                    <li><a href="protein.html">Compare Domains</a></li>
+                    <li><a href="information.html">Information</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+            <h1>Compare Protein Sequences</h1>
+            <form id="proteinForm">
+                <label for="protein1">Enter Protein Sequence 1:</label>
+                <textarea id="protein1" name="protein1" rows="4" placeholder="Enter protein sequence" required></textarea>
+                <label for="protein2">Enter Protein Sequence 2:</label>
+                <textarea id="protein2" name="protein2" rows="4" placeholder="Enter protein sequence" required></textarea>
+                <button type="button" onclick="compareProteins()">Compare</button>
+            </form>
+            <div id="results"></div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
