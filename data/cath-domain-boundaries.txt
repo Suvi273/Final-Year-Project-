@@ -1,0 +1,146 @@
+#---------------------------------------------------------------------
+# FILE NAME:    CathDomall.v4.3.0
+# FILE DATE:    11.09.2019
+#
+# CATH VERSION: v4.3.0
+# VERSION DATE: 11.09.2019
+#
+# FILE FORMAT:  Cath Domall File (CDF) Format 2.0
+#
+# FILE DESCRIPTION:
+# The Cath Domall file describes domain boundaries for entries in the CATH database.
+# Only PDB chains that have been split into domains have a CathDomall entry.
+# Domains that are composed of whole PDB chains are not found in this file.
+#
+# See 'README.file_formats' for file format information
+# OR
+# http://www.biochem.ucl.ac.uk/bsm/cath/formats/v2.0/CathDomall.html
+#---------------------------------------------------------------------
+101mA D01 F00  1  A    0 - A  153 -
+102lA D01 F00  1  A    1 - A  162 -
+102mA D01 F00  1  A    0 - A  153 -
+103lA D01 F00  1  A    1 - A  162 -
+103mA D01 F00  1  A    0 - A  153 -
+104lA D01 F00  1  A    1 - A  162 -
+104lB D01 F00  1  B    1 - B  162 -
+104mA D01 F00  1  A    1 - A  153 -
+105mA D01 F00  1  A    1 - A  153 -
+106mA D01 F00  1  A    0 - A  153 -
+107lA D01 F00  1  A    1 - A  162 -
+107mA D01 F00  1  A    0 - A  153 -
+108lA D01 F00  1  A    1 - A  162 -
+108mA D01 F00  1  A    0 - A  153 -
+109lA D01 F00  1  A    1 - A  162 -
+109mA D01 F00  1  A    0 - A  153 -
+10gsA D02 F01  2  A    2 - A   78 -  A  187 - A  208 -  1  A   79 - A  186 -  A  209 - A  209 - (1)
+10gsB D02 F01  2  B    2 - B   78 -  B  187 - B  208 -  1  B   79 - B  186 -  B  209 - B  209 - (1)
+10mhA D02 F00  2  A    1 - A  186 -  A  285 - A  327 -  1  A  187 - A  284 -
+110lA D01 F00  1  A    1 - A  162 -
+110mA D01 F00  1  A    0 - A  153 -
+111lA D01 F00  1  A    1 - A  162 -
+111mA D01 F00  1  A    0 - A  153 -
+112lA D01 F00  1  A    1 - A  162 -
+112mA D01 F00  1  A    0 - A  153 -
+113lA D01 F00  1  A    1 - A  162 -
+114lA D01 F00  1  A    1 - A  162 -
+115lA D01 F00  1  A    1 - A  162 -
+116lA D01 F00  1  A    1 - A  162 -
+116lB D01 F00  1  B    1 - B  164 -
+116lC D01 F00  1  C    1 - C  164 -
+116lD D01 F00  1  D    1 - D  162 -
+117eA D01 F00  1  A    1 - A  282 -
+117eB D01 F00  1  B 1001 - B 1282 -
+118lA D01 F00  1  A    1 - A  162 -
+119lA D01 F00  1  A    1 - A  162 -
+11asA D01 F00  1  A    4 - A  330 -
+11asB D01 F00  1  B    4 - B  330 -
+11baA D01 F00  1  A    1 - A  124 -
+11baB D01 F00  1  B    1 - B  124 -
+11bgA D01 F00  1  A    1 - A  124 -
+11bgB D01 F00  1  B    1 - B  124 -
+11gsA D02 F01  2  A    2 - A   78 -  A  187 - A  208 -  1  A   79 - A  186 -  A  209 - A  209 - (1)
+11gsB D02 F01  2  B    2 - B   78 -  B  187 - B  208 -  1  B   79 - B  186 -  B  209 - B  209 - (1)
+120lA D01 F00  1  A    1 - A  162 -
+121pA D01 F00  1  A    1 - A  166 -
+122lA D01 F00  1  A    1 - A  162 -
+123lA D01 F00  1  A    1 - A  162 -
+125d0 D01 F00  1  0    1 - 0   43 -
+125lA D01 F00  1  A    1 - A  162 -
+126lA D01 F00  1  A    1 - A  162 -
+127lA D01 F00  1  A    1 - A  162 -
+128lA D01 F00  1  A    1 - A  162 -
+129lA D01 F00  1  A    1 - A  162 -
+12asA D01 F00  1  A    4 - A  330 -
+12asB D01 F00  1  B    4 - B  330 -
+12caA D01 F00  1  A    5 - A  260 -
+12e8H D02 F01  1  H    1 - H  113 -  1  H  114 - H  212 -  H  213 - H  214 - (2)
+12e8L D02 F01  1  L    1 - L  107 -  1  L  108 - L  211 -  L  212 - L  214 - (3)
+12e8M D02 F01  1  M    1 - M  107 -  1  M  108 - M  211 -  M  212 - M  214 - (3)
+12e8P D02 F01  1  P    1 - P  113 -  1  P  114 - P  212 -  P  213 - P  214 - (2)
+12gsA D02 F01  2  A    2 - A   78 -  A  187 - A  208 -  1  A   79 - A  186 -  A  209 - A  209 - (1)
+12gsB D02 F01  2  B    2 - B   78 -  B  187 - B  208 -  1  B   79 - B  186 -  B  209 - B  209 - (1)
+130lA D01 F00  1  A    1 - A  162 -
+131lA D01 F00  1  A    1 - A  162 -
+132lA D01 F00  1  A    2 - A  129 -
+133lA D01 F00  1  A    1 - A  130 -
+134lA D01 F00  1  A    1 - A  130 -
+135lA D01 F00  1  A    1 - A  129 -
+137lA D01 F00  1  A    1 - A  162 -
+137lB D01 F00  1  B    1 - B  164 -
+138lA D01 F00  1  A    1 - A  162 -
+139lA D01 F00  1  A    1 - A  162 -
+13gsA D02 F02  2  A    2 - A   78 -  A  187 - A  208 -  1  A   79 - A  186 -  A    0 - A    1 - (2)  A  209 - A  209 - (1)
+13gsB D02 F01  2  B    2 - B   78 -  B  187 - B  208 -  1  B   79 - B  186 -  B  209 - B  209 - (1)
+13pkA D02 F02  1  A    5 - A  192 -  1  A  199 - A  406 -  A  193 - A  198 - (6)  A  407 - A  419 - (13)
+13pkB D02 F02  1  B    5 - B  192 -  1  B  199 - B  406 -  B  193 - B  198 - (6)  B  407 - B  419 - (13)
+13pkC D02 F02  1  C    5 - C  192 -  1  C  199 - C  406 -  C  193 - C  198 - (6)  C  407 - C  419 - (13)
+13pkD D02 F02  1  D    5 - D  192 -  1  D  199 - D  406 -  D  193 - D  198 - (6)  D  407 - D  419 - (13)
+140lA D01 F00  1  A    1 - A  162 -
+141lA D01 F00  1  A    1 - A  162 -
+142lA D01 F00  1  A    1 - A  162 -
+143lA D01 F00  1  A    1 - A  162 -
+144lA D01 F00  1  A    1 - A  162 -
+145lA D01 F00  1  A    1 - A  162 -
+146lA D01 F00  1  A    1 - A  162 -
+147lA D01 F00  1  A    1 - A  162 -
+148lE D01 F00  1  E    1 - E  163 -
+149lA D01 F00  1  A    1 - A  164 -
+14gsA D02 F01  2  A    2 - A   78 -  A  187 - A  207 -  1  A   79 - A  186 -  A  208 - A  209 - (2)
+14gsB D02 F01  2  B    2 - B   78 -  B  187 - B  207 -  1  B   79 - B  186 -  B  208 - B  209 - (2)
+14psA D01 F00  1  A    1 - A  230 -
+14psB D01 F00  1  B    1 - B  232 -
+150lA D01 F00  1  A    1 - A  164 -
+150lB D01 F00  1  B    1 - B  162 -
+150lC D01 F00  1  C    1 - C  162 -
+150lD D01 F00  1  D    1 - D  162 -
+151lA D01 F00  1  A    1 - A  162 -
+152lA D01 F00  1  A    1 - A  164 -
+153lA D01 F00  1  A    1 - A  185 -
+154lA D01 F00  1  A    1 - A  185 -
+155cA D01 F00  1  A    1 - A  134 -
+155lA D01 F00  1  A    1 - A  162 -
+156lA D01 F00  1  A    1 - A  162 -
+157lA D01 F00  1  A    1 - A  162 -
+158lA D01 F00  1  A    1 - A  162 -
+159lA D01 F00  1  A    1 - A  162 -
+15c8H D02 F00  1  H    1 - H  113 -  1  H  114 - H  226 -
+15c8L D02 F01  1  L    1 - L  108 -  1  L  109 - L  211 -  L  212 - L  212 - (1)
+160lA D01 F00  1  A    1 - A  162 -
+161lA D01 F00  1  A    1 - A  162 -
+162lA D01 F00  1  A    1 - A  162 -
+163lA D01 F00  1  A    1 - A  162 -
+164lA D01 F00  1  A    1 - A  162 -
+165lA D01 F00  1  A    1 - A  162 -
+166lA D01 F00  1  A    1 - A  162 -
+167lA D01 F00  1  A    1 - A  164 -
+167lB D01 F00  1  B    1 - B  164 -
+168lA D01 F00  1  A    1 - A  164 -
+168lB D01 F00  1  B    1 - B  164 -
+168lC D01 F00  1  C    1 - C  164 -
+168lD D01 F00  1  D    1 - D  164 -
+168lE D01 F00  1  E    1 - E  164 -
+169lA D01 F00  1  A    1 - A  162 -
+169lB D01 F00  1  B    1 - B  162 -
+169lC D01 F00  1  C    1 - C  162 -
+169lD D01 F00  1  D    1 - D  162 -
+169lE D01 F00  1  E    1 - E  162 -
