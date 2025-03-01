@@ -44,7 +44,7 @@ async function importCATH(filePath) {
                 continue;
             }
 
-            // 4️⃣ Parse columns
+            // 4️⃣ Parse columns (the first 10)
             const pdb_chain    = parts[0];   // PDB Code + Chain
             const domain_id    = parts[1];   // Domain ID
             const family_id    = parts[2];   // Family ID
@@ -77,23 +77,62 @@ async function importCATH(filePath) {
                 continue;
             }
 
-            // 7️⃣ Insert data into PostgreSQL inside a try/catch
+            // 7️⃣ Insert the FIRST segment
             try {
                 await pool.query(
                     `INSERT INTO cath_data (
                         pdb_chain, domain_id, family_id, class_val,
                         start_chain, start_residue, end_chain, end_residue
                     )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-                    ON CONFLICT (pdb_chain) DO NOTHING;`,
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
                     [
                         pdb_chain, domain_id, family_id, class_val,
                         chain_start, start_residue, chain_end, end_residue
                     ]
                 );
-                console.log("✅ Successfully inserted into cath_data.");
+                console.log("✅ Successfully inserted first segment into cath_data.");
             } catch (dbErr) {
                 console.error("❌ Database insert error on this line:", dbErr);
+            }
+
+            // 8️⃣ [NEW] Parse any EXTRA segments if the line has more columns
+            let extraIndex = 10;
+            while (extraIndex + 5 < parts.length) {
+                // chain_start, start_res, "-", chain_end, end_res, "-"
+                const chain_start2  = parts[extraIndex];
+                const start_res_str = parts[extraIndex + 1];
+                const dash1         = parts[extraIndex + 2];
+                const chain_end2    = parts[extraIndex + 3];
+                const end_res_str   = parts[extraIndex + 4];
+                // parts[extraIndex + 5] might be '-'
+
+                const start_res2 = parseInt(start_res_str.replace('-', ''), 10);
+                const end_res2   = parseInt(end_res_str.replace('-', ''), 10);
+
+                if (Number.isNaN(start_res2) || Number.isNaN(end_res2)) {
+                    console.log("⚠️  Could not parse numeric for extra segment:", start_res_str, end_res_str);
+                    break;
+                }
+
+                // Insert extra segment
+                try {
+                    await pool.query(`
+                        INSERT INTO cath_data (
+                            pdb_chain, domain_id, family_id, class_val,
+                            start_chain, start_residue, end_chain, end_residue
+                        )
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    `, [
+                        pdb_chain, domain_id, family_id, class_val,
+                        chain_start2, start_res2, chain_end2, end_res2
+                    ]);
+                    console.log(`✅ Inserted extra segment: ${chain_start2}${start_res2} - ${chain_end2}${end_res2}`);
+                } catch (exErr) {
+                    console.error("❌ Database insert error (extra segment):", exErr);
+                }
+
+                // Move forward by 6 tokens for the next segment
+                extraIndex += 6;
             }
         }
 
@@ -103,6 +142,7 @@ async function importCATH(filePath) {
         console.error("❌ Error reading CATH data file:", err);
     }
 }
+
 
 app.get('/import-cath', async (req, res) => {
     const filePath = path.join(__dirname, 'data', 'cath-domain-boundaries.txt'); 
@@ -118,13 +158,13 @@ app.get('/cath/:pdb_chain', async (req, res) => {
         const result = await pool.query(`SELECT * FROM cath_data WHERE pdb_chain = $1`, [pdb_chain]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: "❌ No CATH domain found for this PDB chain." });
+            return res.status(404).json({ message: "No CATH domain found for this PDB chain." });
         }
 
         res.json(result.rows);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "❌ Error fetching CATH data", error: err });
+        res.status(500).json({ message: "Error fetching CATH data", error: err });
     }
 });
 
@@ -132,9 +172,9 @@ app.get('/cath/:pdb_chain', async (req, res) => {
 app.get('/test-db', async (req, res) => {
     try {
         const result = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
-        res.json({ message: "✅ Database is connected", tables: result.rows });
+        res.json({ message: " Database is connected", tables: result.rows });
     } catch (error) {
-        res.status(500).json({ message: "❌ Database connection failed", error });
+        res.status(500).json({ message: " Database connection failed", error });
     }
 });
 
