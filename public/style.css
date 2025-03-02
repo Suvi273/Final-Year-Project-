@@ -97,6 +97,7 @@ header {
 .btn-primary:hover, #proteinForm button:hover {
     background: #0056b3;
 }
+
 .btn-login {
     background: #28a745;
     color: white;
@@ -131,4 +132,97 @@ header {
     .container, .form, #proteinForm {
         width: 90%;
     }
+}
+
+/* ============================================================= */
+/* Additional Protein Page Overrides */
+/* These rules let you place the two boxes side by side, if needed */
+/* AND add a more eye-catching design for the protein page.       */
+/* ============================================================= */
+
+/* 
+   1) We'll create a special layout for #proteinForm 
+      so that each input box can sit side by side on larger screens.
+*/
+#proteinForm {
+    /* override the old "flex-direction: column" for row layout */
+    flex-direction: row;
+    flex-wrap: wrap;   /* allows wrapping on small screens */
+    gap: 20px;         /* spacing between boxes */
+
+    background: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+/* 
+   2) For each input box, we can create a new class .input-box 
+      The example below assumes you wrap each input in a <div class="input-box">.
+*/
+#proteinForm .input-box {
+    flex: 1 1 300px;    /* each box is at least 300px wide, grows as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: #ffffff; 
+    padding: 20px;
+    margin: 0 auto;      
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    /* New transitions & a subtle border to stand out */
+    border: 2px solid #007bff1f;  /* a faint bluish border */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#proteinForm .input-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+/* 
+   3) If you want the Compare button separated from the boxes, 
+      you can style it specifically. 
+*/
+#proteinForm button {
+    align-self: center;
+    width: auto;
+    margin-top: 20px;
+    padding: 14px 24px;  /* bigger button */
+    font-weight: 600;    /* bold text */
+    background: linear-gradient(to right, #0056b3, #007bff); /* gradient */
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#proteinForm button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+/* 
+   4) The results might be full width:
+*/
+#results {
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* 
+   5) Optional: A distinct background or gradient for the entire protein page 
+      if you add <body class="protein-page"> in your protein.html
+*/
+body.protein-page {
+    background: linear-gradient(120deg, #f8f9fa, #dee2e6, #f8f9fa);
+    background-size: 200% 200%;
+    animation: gradientBG 10s ease infinite;
+}
+
+/* Animate the background gradient if desired */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }

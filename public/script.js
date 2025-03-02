@@ -1,44 +1,88 @@
-// Function to compare two protein sequences
-function compareProteins() {
-    // Get the protein sequences from the text areas
-    const protein1 = document.getElementById("protein1").value.trim();
-    const protein2 = document.getElementById("protein2").value.trim();
-    
+async function compareProteins() {
+    // Get input values from the form
+    const cathPdbCode = document.getElementById("cathPdbCode").value.trim();
+    const cathChainId = document.getElementById("cathChainId").value.trim();
+    const dyndomPdbCode = document.getElementById("dyndomPdbCode").value.trim();
+    const dyndomChainId = document.getElementById("dyndomChainId").value.trim();
+
     // Clear previous results
     const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = '';
+    resultsDiv.innerHTML = "";
 
-    // Check if both sequences are entered
-    if (protein1 === '' || protein2 === '') {
-        resultsDiv.innerHTML = "<p style='color: red;'>Please enter both protein sequences.</p>";
+    // Validate inputs
+    if (!cathPdbCode || !cathChainId || !dyndomPdbCode || !dyndomChainId) {
+        resultsDiv.innerHTML = "<p style='color: red;'>Please enter all fields.</p>";
         return;
     }
 
-    // Compare the two protein sequences
-    const similarity = calculateSimilarity(protein1, protein2);
-    
-    // Display the results
-    if (similarity === 100) {
-        resultsDiv.innerHTML = "<p>The protein sequences are identical.</p>";
-    } else if (similarity > 0) {
-        resultsDiv.innerHTML = `<p>The protein sequences have a ${similarity}% similarity.</p>`;
-    } else {
-        resultsDiv.innerHTML = "<p>The protein sequences have no similarity.</p>";
+    try {
+        // Show loading message
+        resultsDiv.innerHTML = "<p>Loading...</p>";
+
+        // Fetch comparison data from API
+        const response = await fetch(`/compare/${cathPdbCode}/${cathChainId}`);
+        const data = await response.json();
+
+        // Handle API errors
+        if (!response.ok) {
+            resultsDiv.innerHTML = `<p style='color: red;'>${data.message}</p>`;
+            return;
+        }
+
+        // Display comparison results
+        displayResults(data);
+    } catch (error) {
+        resultsDiv.innerHTML = "<p style='color: red;'>Error fetching data. Please try again.</p>";
+        console.error("API Error:", error);
     }
 }
 
-// Function to calculate the similarity percentage between two sequences
-function calculateSimilarity(seq1, seq2) {
-    let matches = 0;
-    const maxLength = Math.max(seq1.length, seq2.length);
-    
-    // Compare the sequences character by character
-    for (let i = 0; i < maxLength; i++) {
-        if (seq1[i] === seq2[i]) {
-            matches++;
-        }
+// Function to display results in a table
+function displayResults(data) {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (data.length === 0) {
+        resultsDiv.innerHTML = "<p>No matching proteins found.</p>";
+        return;
     }
 
-    // Return similarity as a percentage
-    return ((matches / maxLength) * 100).toFixed(2);
+    let tableHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Dyndom PDB</th>
+                    <th>Dyndom Chain</th>
+                    <th>Dyndom Start</th>
+                    <th>Dyndom End</th>
+                    <th>CATH PDB</th>
+                    <th>CATH Chain</th>
+                    <th>CATH Start</th>
+                    <th>CATH End</th>
+                    <th>Overlap % (Dyndom)</th>
+                    <th>Overlap % (CATH)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    data.forEach(row => {
+        tableHTML += `
+            <tr>
+                <td>${row.dyndom_pdbcode}</td>
+                <td>${row.dyndom_chain}</td>
+                <td>${row.dyndom_startres}</td>
+                <td>${row.dyndom_endres}</td>
+                <td>${row.cath_pdbchain}</td>
+                <td>${row.cath_chain}</td>
+                <td>${row.cath_startres}</td>
+                <td>${row.cath_endres}</td>
+                <td>${row.dyndom_overlap_percent}%</td>
+                <td>${row.cath_overlap_percent}%</td>
+            </tr>
+        `;
+    });
+
+    tableHTML += `</tbody></table>`;
+    resultsDiv.innerHTML = tableHTML;
 }

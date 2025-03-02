@@ -30,44 +30,26 @@ async function importCATH(filePath) {
         const lines = data.split('\n').filter(line => line.trim() !== '');
 
         for (const line of lines) {
-            // 1️⃣ Log the raw line
             console.log("\n--- Processing new line ---");
             console.log("Raw line:", line);
 
-            // 2️⃣ Split line by whitespace
             const parts = line.trim().split(/\s+/);
             console.log("Split parts:", parts);
 
-            // 3️⃣ Check if enough columns exist
             if (parts.length < 10) {
                 console.warn("⚠️  Skipping line (not enough columns):", parts.length);
                 continue;
             }
 
-            // 4️⃣ Parse columns (the first 10)
-            const pdb_chain    = parts[0];   // PDB Code + Chain
-            const domain_id    = parts[1];   // Domain ID
-            const family_id    = parts[2];   // Family ID
-            const class_val    = parseInt(parts[3], 10); // CATH class
+            const pdb_chain    = parts[0];
+            const domain_id    = parts[1];
+            const family_id    = parts[2];
+            const class_val    = parseInt(parts[3], 10);
             const chain_start  = parts[4];  
             const start_residue = parseInt(parts[5], 10);
-            // parts[6] is '-'
             const chain_end    = parts[7];
             const end_residue  = parseInt(parts[8], 10);
-            // parts[9] is '-'
 
-            // 5️⃣ Log parsed values
-            console.log("Parsed values:");
-            console.log("  pdb_chain   =", pdb_chain);
-            console.log("  domain_id   =", domain_id);
-            console.log("  family_id   =", family_id);
-            console.log("  class_val   =", class_val, "(NaN?)", Number.isNaN(class_val));
-            console.log("  chain_start =", chain_start);
-            console.log("  start_res   =", start_residue, "(NaN?)", Number.isNaN(start_residue));
-            console.log("  chain_end   =", chain_end);
-            console.log("  end_res     =", end_residue, "(NaN?)", Number.isNaN(end_residue));
-
-            // 6️⃣ Validate numeric fields
             if (
                 Number.isNaN(class_val) ||
                 Number.isNaN(start_residue) ||
@@ -77,7 +59,6 @@ async function importCATH(filePath) {
                 continue;
             }
 
-            // 7️⃣ Insert the FIRST segment
             try {
                 await pool.query(
                     `INSERT INTO cath_data (
@@ -95,16 +76,12 @@ async function importCATH(filePath) {
                 console.error("❌ Database insert error on this line:", dbErr);
             }
 
-            // 8️⃣ [NEW] Parse any EXTRA segments if the line has more columns
             let extraIndex = 10;
             while (extraIndex + 5 < parts.length) {
-                // chain_start, start_res, "-", chain_end, end_res, "-"
                 const chain_start2  = parts[extraIndex];
                 const start_res_str = parts[extraIndex + 1];
-                const dash1         = parts[extraIndex + 2];
                 const chain_end2    = parts[extraIndex + 3];
                 const end_res_str   = parts[extraIndex + 4];
-                // parts[extraIndex + 5] might be '-'
 
                 const start_res2 = parseInt(start_res_str.replace('-', ''), 10);
                 const end_res2   = parseInt(end_res_str.replace('-', ''), 10);
@@ -114,7 +91,6 @@ async function importCATH(filePath) {
                     break;
                 }
 
-                // Insert extra segment
                 try {
                     await pool.query(`
                         INSERT INTO cath_data (
@@ -131,7 +107,6 @@ async function importCATH(filePath) {
                     console.error("❌ Database insert error (extra segment):", exErr);
                 }
 
-                // Move forward by 6 tokens for the next segment
                 extraIndex += 6;
             }
         }
@@ -143,40 +118,73 @@ async function importCATH(filePath) {
     }
 }
 
-
 app.get('/import-cath', async (req, res) => {
     const filePath = path.join(__dirname, 'data', 'cath-domain-boundaries.txt'); 
     await importCATH(filePath);
     res.json({ message: 'CATH import process started' });
 });
 
-
-// ✅ API route to fetch CATH domain data for a PDB Chain
-app.get('/cath/:pdb_chain', async (req, res) => {
+// ✅ API route to compare CATH and Dyndom data
+app.get('/compare/:pdb_code/:chain_id', async (req, res) => {
     try {
-        const { pdb_chain } = req.params;
-        const result = await pool.query(`SELECT * FROM cath_data WHERE pdb_chain = $1`, [pdb_chain]);
+        const { pdb_code, chain_id } = req.params;
+
+        const query = `
+            WITH dyndom_ranges AS (
+              SELECT
+                c.pdbcode,
+                c.chainid,
+                split_ranges.min_val AS dyndom_start,
+                split_ranges.max_val AS dyndom_end
+              FROM conformer c
+              CROSS JOIN LATERAL (
+                SELECT
+                  MIN( (REGEXP_REPLACE(x, '[^0-9]+', '', 'g'))::int ) AS min_val,
+                  MAX( (REGEXP_REPLACE(x, '[^0-9]+', '', 'g'))::int ) AS max_val
+                FROM unnest(regexp_split_to_array(c.pdbindex, ':')) AS t(x)
+                WHERE REGEXP_REPLACE(x, '[^0-9]+', '', 'g') <> ''
+              ) AS split_ranges
+            )
+            SELECT
+              dr.pdbcode AS dyndom_pdbcode, dr.chainid AS dyndom_chain,
+              dr.dyndom_start, dr.dyndom_end,
+              cd.pdb_chain AS cath_pdbchain, cd.start_chain AS cath_chain,
+              cd.start_residue AS cath_startres, cd.end_residue AS cath_endres,
+              
+              GREATEST(0, LEAST(dr.dyndom_end, cd.end_residue) - GREATEST(dr.dyndom_start, cd.start_residue) + 1) AS overlap_length,
+              
+              ROUND(
+                (GREATEST(0, LEAST(dr.dyndom_end, cd.end_residue) - GREATEST(dr.dyndom_start, cd.start_residue) + 1)::float /
+                 (dr.dyndom_end - dr.dyndom_start + 1) * 100)::numeric, 2
+              ) AS dyndom_overlap_percent,
+              
+              ROUND(
+                (GREATEST(0, LEAST(dr.dyndom_end, cd.end_residue) - GREATEST(dr.dyndom_start, cd.start_residue) + 1)::float /
+                 (cd.end_residue - cd.start_residue + 1) * 100)::numeric, 2
+              ) AS cath_overlap_percent
+              
+            FROM dyndom_ranges dr
+            JOIN cath_data cd
+              ON dr.pdbcode = cd.pdb_chain
+              AND dr.chainid = cd.start_chain
+            
+            WHERE dr.pdbcode = $1 AND dr.chainid = $2
+            ORDER BY dr.pdbcode, dr.chainid;
+        `;
+
+        const result = await pool.query(query, [pdb_code, chain_id]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: "No CATH domain found for this PDB chain." });
+            return res.status(404).json({ message: "No overlap found for the given PDB and Chain ID." });
         }
 
         res.json(result.rows);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Error fetching CATH data", error: err });
+        res.status(500).json({ message: "Error fetching comparison data", error: err });
     }
 });
 
-// ✅ API to check database connection
-app.get('/test-db', async (req, res) => {
-    try {
-        const result = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
-        res.json({ message: " Database is connected", tables: result.rows });
-    } catch (error) {
-        res.status(500).json({ message: " Database connection failed", error });
-    }
-});
 
 // Login route
 app.post('/login', (req, res) => {
@@ -191,11 +199,7 @@ app.post('/login', (req, res) => {
     }
 });
 
-
-
-
 // ✅ Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
-
