@@ -1,11 +1,9 @@
-/* CSS (public/style.css) */
-
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background-color: #f4f4f4;
     color: #333;
 }
 
@@ -13,17 +11,14 @@ body {
     width: 80%;
     margin: 0 auto;
     padding: 20px;
-
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
 /* Header and Navigation */
 header {
-    background: #007bff;
+    background: #2c3e50;
     color: white;
-    padding: 15px 0;
+    padding: 20px 0;
     text-align: center;
 }
 
@@ -48,34 +43,44 @@ header {
 }
 
 .nav-links a:hover {
-    background: #0056b3;
+    background: #1a252f;
     border-radius: 5px;
+}
+
+/* Banner Image on Home Page */
+.banner {
+    width: 100%;
+    overflow: hidden;
+}
+
+.banner img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Sections */
 .section {
     padding: 50px 0;
-    text-align: center;
     background: white;
     margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 /* Forms */
-.form, #proteinForm {
+form, #proteinForm {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #e9ecef;
+    background: #ecf0f1;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 60%;
-    margin: auto;
+    margin: 20px auto;
 }
 
-.form input, .form button, #proteinForm textarea, #proteinForm button {
+form input, form button, #proteinForm textarea, #proteinForm button {
     padding: 12px;
     margin: 10px 0;
     width: 80%;
@@ -84,22 +89,22 @@ header {
 }
 
 .btn-primary, #proteinForm button {
-    background: #007bff;
+    background: #34495e;
     color: white;
     border: none;
     cursor: pointer;
-    transition: background 0.3s;
     font-size: 16px;
     padding: 12px;
     border-radius: 5px;
+    transition: background 0.3s;
 }
 
 .btn-primary:hover, #proteinForm button:hover {
-    background: #0056b3;
+    background: #2c3e50;
 }
 
 .btn-login {
-    background: #28a745;
+    background: #27ae60;
     color: white;
     border: none;
     cursor: pointer;
@@ -110,16 +115,46 @@ header {
 }
 
 .btn-login:hover {
-    background: #218838;
+    background: #1e8449;
+}
+
+.btn-logout {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
 }
 
 /* Results Display */
 #results {
     margin-top: 20px;
     padding: 20px;
-    background: #f1f1f1;
+    background: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Clear Reports Button */
+.btn-clear {
+    background: #e67e22;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #d35400;
 }
 
 /* Responsive Design */
@@ -128,101 +163,46 @@ header {
         flex-direction: column;
         align-items: center;
     }
-
-    .container, .form, #proteinForm {
+    .container, form, #proteinForm {
         width: 90%;
     }
 }
 
-/* ============================================================= */
-/* Additional Protein Page Overrides */
-/* These rules let you place the two boxes side by side, if needed */
-/* AND add a more eye-catching design for the protein page.       */
-/* ============================================================= */
-
-/* 
-   1) We'll create a special layout for #proteinForm 
-      so that each input box can sit side by side on larger screens.
-*/
-#proteinForm {
-    /* override the old "flex-direction: column" for row layout */
-    flex-direction: row;
-    flex-wrap: wrap;   /* allows wrapping on small screens */
-    gap: 20px;         /* spacing between boxes */
-
-    background: none;
-    box-shadow: none;
-    padding: 0;
-}
-
-/* 
-   2) For each input box, we can create a new class .input-box 
-      The example below assumes you wrap each input in a <div class="input-box">.
-*/
-#proteinForm .input-box {
-    flex: 1 1 300px;    /* each box is at least 300px wide, grows as needed */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background: #ffffff; 
-    padding: 20px;
-    margin: 0 auto;      
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-
-    /* New transitions & a subtle border to stand out */
-    border: 2px solid #007bff1f;  /* a faint bluish border */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-#proteinForm .input-box:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-}
-
-/* 
-   3) If you want the Compare button separated from the boxes, 
-      you can style it specifically. 
-*/
-#proteinForm button {
-    align-self: center;
-    width: auto;
-    margin-top: 20px;
-    padding: 14px 24px;  /* bigger button */
-    font-weight: 600;    /* bold text */
-    background: linear-gradient(to right, #0056b3, #007bff); /* gradient */
-    border-radius: 25px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-#proteinForm button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-}
-
-/* 
-   4) The results might be full width:
-*/
-#results {
+/* Table Container */
+#reportsContainer table {
     width: 100%;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* 
-   5) Optional: A distinct background or gradient for the entire protein page 
-      if you add <body class="protein-page"> in your protein.html
-*/
-body.protein-page {
-    background: linear-gradient(120deg, #f8f9fa, #dee2e6, #f8f9fa);
-    background-size: 200% 200%;
-    animation: gradientBG 10s ease infinite;
-}
-
-/* Animate the background gradient if desired */
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+    border-collapse: collapse;
+    margin: 20px auto;
+    font-size: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Table Header */
+  #reportsContainer thead {
+    background: #34495e;
+    color: #fff;
+  }
+  
+  #reportsContainer thead tr {
+    border-bottom: 2px solid #2c3e50;
+  }
+  
+  #reportsContainer th, 
+  #reportsContainer td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Table Body Rows */
+  #reportsContainer tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  #reportsContainer tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  

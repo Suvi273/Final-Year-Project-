@@ -1,32 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protein Domain Comparison</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protein Domain Comparison</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Protein Domain Comparison</h1>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="protein.html">Compare Domains</a></li>
-                    <li><a href="information.html">Information</a></li>
-                    <li><a href="login.html" class="btn-login">Login</a></li> <!-- Login button added -->
-                </ul>
-                </ul>
-            </nav>
+  <header>
+    <div class="container">
+      <h1>Protein Domain Comparison</h1>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="Home.html">Home</a></li>
+          <li><a href="protein.html">Compare Domains</a></li>
+          <li><a href="reports.html">Reports</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <!-- Banner Image (replace with your own image file) -->
+    <div class="banner">
+      <img src="images/protein-banner.jpg" alt="Protein Domain Visualization">
+    </div>
+    <div class="container" id="mainContent">
+      <!-- This content is dynamically loaded based on login state -->
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          const mainContent = document.getElementById('mainContent');
+          const token = localStorage.getItem('authToken');
+          
+          if (token) {
+            mainContent.innerHTML = `
+              <h2>Welcome to the Protein Domain Comparison Tool</h2>
+              <p>
+                Our website helps you compare protein structural and dynamic domains easily.
+                Navigate to the "Compare Domains" page to enter protein codes and chain identifiers,
+                and review detailed results on domain overlaps, structural insights, and dynamic behavior.
+              </p>
+              <p>
+                Check out the "Reports" page to review your previous comparisons.
+                We are dedicated to providing researchers with an intuitive and powerful analysis tool.
+              </p>
+            `;
+          } else {
+            mainContent.innerHTML = `
+              <h2>Welcome to the Protein Domain Comparison Tool</h2>
+              <p>Please log in to continue.</p>
+              <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <br>
+                <button type="submit" class="btn-primary">Login</button>
+              </form>
+            `;
             
-        </div>
-    </header>
-    <main>
-        <div class="container">
-            <h2>Welcome to the Protein Domain Comparison Tool</h2>
-            <p>Use this tool to search and compare protein structural and dynamic domains.</p>
-        </div>
-    </main>
+            document.getElementById('loginForm').addEventListener('submit', async (event) => {
+              event.preventDefault();
+              
+              const formData = new FormData(event.target);
+              const username = formData.get('username');
+              const password = formData.get('password');
+              
+              try {
+                const response = await fetch('http://localhost:5500/login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                  localStorage.setItem('authToken', 'your-auth-token');
+                  alert('Login successful!');
+                  window.location.reload();
+                } else {
+                  alert('Invalid username or password.');
+                }
+              } catch (error) {
+                console.error("Error during login:", error);
+                alert('An error occurred. Please try again.');
+              }
+            });
+          }
+        });
+      </script>
+    </div>
+  </main>
 </body>
 </html>

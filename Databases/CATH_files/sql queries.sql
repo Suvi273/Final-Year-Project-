@@ -1,4 +1,4 @@
-select * from cath_data
+select * from cath_domains_data
 select * from domainregion
 select * from domainpair
 select * from chain
@@ -17,7 +17,7 @@ select * from dyndomrun
 select * from domainpairenzyme
 select * from bendingresidue
 
-DROP TABLE cath_data CASCADE;
+DROP TABLE cath_domains_data CASCADE;
 
 
 SELECT *
@@ -40,110 +40,155 @@ ORDER BY
 
 
 
-
-
-CREATE TABLE cath_data (
-    id            SERIAL PRIMARY KEY,
-    pdb_chain     TEXT,
-    domain_id     TEXT,
-    family_id     TEXT,
-    class_val     INT,
-    start_chain   TEXT,
-    start_residue INT,
-    end_chain     TEXT,
-    end_residue   INT
+CREATE TABLE cath_domains_data (
+    id SERIAL PRIMARY KEY,
+    pdbcode VARCHAR(4) NOT NULL,     -- e.g., '1lfg'
+    chain CHAR(1) NOT NULL,           -- e.g., 'A'
+    domain_number INTEGER NOT NULL,   -- e.g., 1, 2, 3, 4
+    segment_number INTEGER NOT NULL,  -- segment within the domain
+    dombegin INTEGER NOT NULL,        -- starting residue
+    domend INTEGER NOT NULL           -- ending residue
 );
+
+
+
+
+
+
+
+
+SELECT *
+FROM conformer
+WHERE pdbcode = '1lfg';
+
+select *
+from domainpair
+where ddid = 'LACTO1R12'
+
+
+select*
+from bendingregion
+where ddid = 'LACTO1R12'
+
+
+------ dynddom residues for 1lfg ------------
+SELECT *
+FROM domainregion
+WHERE domainid IN ('LACTO1R12D3', 'LACTO1R12D2', 'LACTO1R12D1');
+
+
+---LACTO1R12D1 --- LACTO1R12D2 ,  LACTO1R12D1 ---LACTO1R12D3------
+
+
+
+--------dyndom data with pdb code -----
+SELECT
+    c.pdbcode,
+    c.chainid,
+    dr.domainid,
+    dr.dombegin,
+    dr.domend
+FROM domainregion dr
+JOIN dyndomrun d
+    ON dr.domainid LIKE d.ddid || '%'
+JOIN conformer c
+    ON c.id = d.confid2
+WHERE c.pdbcode = '1lfg'
+  AND c.chainid = 'A';
+-------------------------
+
+SELECT
+  'CATH' AS source,                 -- label the source
+  CONCAT('Domain ', domain_number) AS domainid,
+  dombegin,
+  domend
+FROM cath_domains_data
+WHERE pdbcode = '1lfg'
+  AND chain = 'A';
+--------------------
+SELECT
+  'DYNDOM' AS source,              -- label the source
+  dr.domainid,
+  dr.dombegin,
+  dr.domend
+FROM domainregion dr
+JOIN dyndomrun d
+    ON dr.domainid LIKE d.ddid || '%'
+JOIN conformer c
+    ON c.id = d.confid2
+WHERE c.pdbcode = '1lfg'
+  AND c.chainid = 'A';
+
+
+-------------------- my main data table for both cath n dyndon------
+
+SELECT
+  cd.pdbcode                AS pdbcode,
+  cd.chain                  AS chainid,
+  'CATH'                    AS source,
+  CONCAT('Domain ', cd.domain_number) AS domainid,
+  cd.dombegin,
+  cd.domend
+FROM cath_domains_data cd
+WHERE cd.pdbcode = '1lfg'
+  AND cd.chain = 'A'
+
+UNION ALL
+
+SELECT
+  c.pdbcode                 AS pdbcode,
+  c.chainid                 AS chainid,
+  'DYNDOM'                  AS source,
+  'Domain ' || RIGHT(dr.domainid, 1) AS domainid,
+  dr.dombegin,
+  dr.domend
+FROM domainregion dr
+JOIN dyndomrun d
+    ON dr.domainid LIKE d.ddid || '%'
+JOIN conformer c
+    ON c.id = d.confid2
+WHERE c.pdbcode = '1lfg'
+  AND c.chainid = 'A'
+
+ORDER BY source, domainid;
+
+------------------------------------------------------------------------
+
+
+
+
+
 
 
 SELECT pdbcode, pdbindex
 FROM conformer;
 
-
-
- 
-SELECT 
-  pdbcode,
-  pdbindex
+SELECT pdbcode, pdbindex
 FROM conformer
-ORDER BY
-  -- 1) First sort numerically by any leading digits
-  CASE
-    WHEN pdbcode ~ '^[0-9]+' THEN
-      CAST(REGEXP_REPLACE(pdbcode, '^([0-9]+).*', '\1') AS int)
-    ELSE
-      0
-  END,
-  -- 2) Next sort by whatever remains after those leading digits
-  CASE
-    WHEN pdbcode ~ '^[0-9]+' THEN
-      REGEXP_REPLACE(pdbcode, '^[0-9]+', '')
-    ELSE
-      pdbcode
-  END;
+WHERE pdbcode = '1lfg';
+
+SELECT *
+FROM dyndomrun
+WHERE confid2 = 'LACTO1C11';
+
+---LACTO1R12 --- means 1lfg
+SELECT * FROM domainregion WHERE domainid LIKE 'LACTO1R12%';
 
 
 
 
 
 
-  
-SELECT 
-  pdbcode,
-  chainid,
-  pdbindex
+SELECT id, pdbcode, chainid 
+FROM conformer 
+WHERE pdbcode = '1lfg';
+SELECT *
+FROM domainregion
+WHERE domainid LIKE 'LACTO1R12%';
+
+SELECT id, pdbcode, chainid
 FROM conformer
-ORDER BY
-  -- 1) First sort numerically by any leading digits in pdbcode
-  CASE
-    WHEN pdbcode ~ '^[0-9]+' THEN
-      CAST(REGEXP_REPLACE(pdbcode, '^([0-9]+).*', '\1') AS int)
-    ELSE
-      0
-  END,
-  -- 2) Next sort by whatever remains after those leading digits
-  CASE
-    WHEN pdbcode ~ '^[0-9]+' THEN
-      REGEXP_REPLACE(pdbcode, '^[0-9]+', '')
-    ELSE
-      pdbcode
-  END;
-
-
-
-
-
-
-
-SELECT
-  c.pdbcode,
-  c.chainid,
-  split_ranges.min_val AS start_res,
-  split_ranges.max_val AS end_res
-FROM conformer c
-CROSS JOIN LATERAL (
-  SELECT
-    MIN( (REGEXP_REPLACE(x, '[^0-9]+', '', 'g'))::int ) AS min_val,
-    MAX( (REGEXP_REPLACE(x, '[^0-9]+', '', 'g'))::int ) AS max_val
-  FROM unnest(regexp_split_to_array(c.pdbindex, ':')) AS t(x)
-  WHERE REGEXP_REPLACE(x, '[^0-9]+', '', 'g') <> ''
-) AS split_ranges
-ORDER BY
-  /* 1) Numeric sort by leading digits in pdbcode */
-  CASE
-    WHEN c.pdbcode ~ '^[0-9]+' THEN 
-      CAST(REGEXP_REPLACE(c.pdbcode, '^([0-9]+).*', '\1') AS int)
-    ELSE
-      0
-  END,
-  /* 2) Then alphabetical sort by any leftover string */
-  CASE
-    WHEN c.pdbcode ~ '^[0-9]+' THEN
-      REGEXP_REPLACE(c.pdbcode, '^[0-9]+', '')
-    ELSE
-      c.pdbcode
-  END,
-  /* Optionally chainid next, if you want to sort by chain within the same pdbcode: */
-  c.chainid;
+WHERE pdbcode = '1lfg';
 
 
 
@@ -152,63 +197,27 @@ ORDER BY
 
 
 
-----------THIS IS MY MAIN TABLE FOR BOTH DATAS-------------
 
 
 
-WITH dyndom_ranges AS (
-  SELECT
-    c.pdbcode,
-    c.chainid,
-    -- Derive numeric start/end from the colon-separated pdbindex field:
-    split_ranges.min_val AS dyndom_start,
-    split_ranges.max_val AS dyndom_end
-  FROM conformer c
-  CROSS JOIN LATERAL (
-    SELECT
-      MIN( (REGEXP_REPLACE(x, '[^0-9]+', '', 'g'))::int ) AS min_val,
-      MAX( (REGEXP_REPLACE(x, '[^0-9]+', '', 'g'))::int ) AS max_val
-    FROM unnest(regexp_split_to_array(c.pdbindex, ':')) AS t(x)
-    WHERE REGEXP_REPLACE(x, '[^0-9]+', '', 'g') <> ''
-  ) AS split_ranges
-)
-SELECT
-  dr.pdbcode        AS dyndom_pdbcode,
-  dr.chainid        AS dyndom_chain,
-  dr.dyndom_start   AS dyndom_startres,
-  dr.dyndom_end     AS dyndom_endres,
-  cd.pdb_chain      AS cath_pdbchain,
-  cd.start_chain    AS cath_chain,
-  cd.start_residue  AS cath_startres,
-  cd.end_residue    AS cath_endres
-FROM dyndom_ranges dr
-JOIN cath_data cd
-  ON dr.pdbcode = cd.pdb_chain
- /* If you store chain differently, adapt as needed. For example: */
-  AND dr.chainid = cd.start_chain
 
--- Overlap condition: partial or full
-WHERE
-  dr.dyndom_start <= cd.end_residue
-  AND dr.dyndom_end   >= cd.start_residue
 
-ORDER BY
-  /* 1) Numeric sort by leading digits in dr.pdbcode */
-  CASE
-    WHEN dr.pdbcode ~ '^[0-9]+' THEN 
-      CAST(REGEXP_REPLACE(dr.pdbcode, '^([0-9]+).*', '\1') AS int)
-    ELSE
-      0
-  END,
-  /* 2) Then alphabetical sort by leftover string */
-  CASE
-    WHEN dr.pdbcode ~ '^[0-9]+' THEN
-      REGEXP_REPLACE(dr.pdbcode, '^[0-9]+', '')
-    ELSE
-      dr.pdbcode
-  END,
-  /* 3) Optionally, also sort by chain if you want: */
-  dr.chainid;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

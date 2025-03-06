@@ -9,70 +9,57 @@
 <body>
   <header>
     <div class="container">
-      <h1>Protein Comparison Tool</h1>
+      <h1>Protein Domain Comparison</h1>
       <nav>
         <ul class="nav-links">
           <li><a href="Home.html">Home</a></li>
           <li><a href="protein.html">Compare Domains</a></li>
-          <li><a href="information.html">Information</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li id="auth-btn"></li>
         </ul>
       </nav>
     </div>
   </header>
-
+  
   <main>
-    <h1>Compare CATH and Dyndom Domains</h1>
+    <h1>Compare Protein Domains</h1>
     <form id="proteinForm">
-      <!-- Box 1: CATH inputs -->
       <div class="input-box">
-        <label for="cathPdbCode">CATH PDB Code:</label>
-        <input
-          type="text"
-          id="cathPdbCode"
-          name="cathPdbCode"
-          placeholder="e.g., 1xyz"
-          required
-        />
-
-        <label for="cathChainId">CATH Chain ID:</label>
-        <input
-          type="text"
-          id="cathChainId"
-          name="cathChainId"
-          placeholder="e.g., A"
-          required
-        />
+        <label for="pdbCode">PDB Code:</label>
+        <input type="text" id="pdbCode" name="pdbCode" placeholder="e.g., 1LFG" required>
+        <label for="chainId">Chain ID:</label>
+        <input type="text" id="chainId" name="chainId" placeholder="e.g., A" required>
       </div>
-      
-      <!-- Box 2: Dyndom inputs -->
-      <div class="input-box">
-        <label for="dyndomPdbCode">Dyndom PDB Code:</label>
-        <input
-          type="text"
-          id="dyndomPdbCode"
-          name="dyndomPdbCode"
-          placeholder="e.g., 1xyz"
-          required
-        />
-
-        <label for="dyndomChainId">Dyndom Chain ID:</label>
-        <input
-          type="text"
-          id="dyndomChainId"
-          name="dyndomChainId"
-          placeholder="e.g., A"
-          required
-        />
-      </div>
-
-      <!-- Compare button -->
       <button type="button" onclick="compareProteins()">Compare</button>
-
-      <!-- Results area -->
       <div id="results"></div>
     </form>
   </main>
-
+  
   <script src="script.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const authBtn = document.getElementById('auth-btn');
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        authBtn.innerHTML = '<button id="logoutBtn" class="btn-logout">Logout</button>';
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+          localStorage.removeItem('authToken');
+          window.location.href = "login.html";
+        });
+      } else {
+        authBtn.innerHTML = '<a href="login.html" class="btn-login">Login</a>';
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Reports - Protein Domain Comparison</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Protein Domain Comparison</h1>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="Home.html">Home</a></li>
+          <li><a href="protein.html">Compare Domains</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li id="auth-btn"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <div class="container">
+      <h2>User Reports</h2>
+      <button id="clearReportsBtn" class="btn-clear">Clear Reports</button>
+      <div id="reportsContainer">
+        <!-- Reports table will be inserted here -->
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+      
+      const authBtn = document.getElementById("auth-btn");
+      authBtn.innerHTML = '<button id="logoutBtn" class="btn-logout">Logout</button>';
+      document.getElementById("logoutBtn").addEventListener("click", function () {
+        localStorage.removeItem("authToken");
+        window.location.href = "login.html";
+      });
+      
+      loadReports();
+    });
+    
+    function loadReports() {
+      const reportsContainer = document.getElementById("reportsContainer");
+      let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    
+      if (reports.length === 0) {
+        reportsContainer.innerHTML =
+          "<p>No reports found. Please perform a comparison to generate reports.</p>";
+        return;
+      }
+    
+      let tableHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>CATH PDB Code</th>
+              <th>CATH Chain ID</th>
+              <th>Dyndom PDB Code</th>
+              <th>Dyndom Chain ID</th>
+              <th>Results Summary</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+    
+      reports.forEach((report) => {
+        tableHTML += `
+          <tr>
+            <td>${report.timestamp}</td>
+            <td>${report.inputs.cathPdbCode}</td>
+            <td>${report.inputs.cathChainId}</td>
+            <td>${report.inputs.dyndomPdbCode}</td>
+            <td>${report.inputs.dyndomChainId}</td>
+            <td>${report.resultsSummary}</td>
+          </tr>
+        `;
+      });
+    
+      tableHTML += `</tbody></table>`;
+      reportsContainer.innerHTML = tableHTML;
+    }
+    
+    document.getElementById("clearReportsBtn").addEventListener("click", function () {
+      if (confirm("Are you sure you want to clear all reports?")) {
+        localStorage.removeItem("reports");
+        loadReports();
+      }
+    });
+  </script>
+</body>
+</html>
