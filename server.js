@@ -108,47 +108,42 @@ app.get('/import-cath', async (req, res) => {
     res.json({ message: 'CATH import process started' });
 });
 
-
-app.get('/import-cath', async (req, res) => {
-    const filePath = path.join(__dirname, 'data', 'cath-domain-boundaries.txt'); 
-    await importCATH(filePath);
-    res.json({ message: 'CATH import process started' });
-});
-
 // ✅ API route to compare CATH and Dyndom data
 app.get('/compare/:pdb_code/:chain_id', async (req, res) => {
     try {
       const { pdb_code, chain_id } = req.params;
   
       const query = `
-        SELECT
-          cd.pdbcode                AS pdbcode,
-          cd.chain                  AS chainid,
-          'CATH'                    AS source,
-          CONCAT('Domain ', cd.domain_number) AS domainid,
-          cd.dombegin,
-          cd.domend
-        FROM cath_domains_data cd
-        WHERE UPPER(cd.pdbcode) = UPPER($1)
-          AND UPPER(cd.chain) = UPPER($2)
+        SELECT DISTINCT *
+        FROM (
+          SELECT
+            cd.pdbcode                AS pdbcode,
+            cd.chain                  AS chainid,
+            'CATH'                    AS source,
+            CONCAT('Domain ', cd.domain_number) AS domainid,
+            cd.dombegin,
+            cd.domend
+          FROM cath_domains_data cd
+          WHERE UPPER(cd.pdbcode) = UPPER($1)
+            AND UPPER(cd.chain) = UPPER($2)
   
-        UNION ALL
+          UNION
   
-        SELECT
-          c.pdbcode                 AS pdbcode,
-          c.chainid                 AS chainid,
-          'DYNDOM'                  AS source,
-          'Domain ' || RIGHT(dr.domainid, 1) AS domainid,
-          dr.dombegin,
-          dr.domend
-        FROM domainregion dr
-        JOIN dyndomrun d
-            ON dr.domainid LIKE d.ddid || '%'
-        JOIN conformer c
-            ON c.id = d.confid2
-        WHERE UPPER(c.pdbcode) = UPPER($1)
-          AND UPPER(c.chainid) = UPPER($2)
-        
+          SELECT
+            c.pdbcode                 AS pdbcode,
+            c.chainid                 AS chainid,
+            'DYNDOM'                  AS source,
+            'Domain ' || RIGHT(dr.domainid, 1) AS domainid,
+            dr.dombegin,
+            dr.domend
+          FROM domainregion dr
+          JOIN dyndomrun d
+              ON dr.domainid LIKE d.ddid || '%'
+          JOIN conformer c
+              ON c.id = d.confid2
+          WHERE UPPER(c.pdbcode) = UPPER($1)
+            AND UPPER(c.chainid) = UPPER($2)
+        ) AS combined
         ORDER BY source, domainid;
       `;
   
@@ -163,7 +158,7 @@ app.get('/compare/:pdb_code/:chain_id', async (req, res) => {
       console.error(err);
       res.status(500).json({ message: "Error fetching comparison data", error: err });
     }
-  });
+});
   
 
 // Login route
@@ -178,7 +173,7 @@ app.post('/login', (req, res) => {
         res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 });
-
+  
 // ✅ Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

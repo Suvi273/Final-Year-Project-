@@ -136,9 +136,6 @@ form input, form button, #proteinForm textarea, #proteinForm button {
 #results {
     margin-top: 20px;
     padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 /* Clear Reports Button */
@@ -168,7 +165,7 @@ form input, form button, #proteinForm textarea, #proteinForm button {
     }
 }
 
-/* Table Container */
+/* Table Container for Reports (Reports Page) */
 #reportsContainer table {
     width: 100%;
     border-collapse: collapse;
@@ -178,31 +175,127 @@ form input, form button, #proteinForm textarea, #proteinForm button {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Table Header */
-  #reportsContainer thead {
+}
+
+#reportsContainer thead {
     background: #34495e;
     color: #fff;
-  }
-  
-  #reportsContainer thead tr {
+}
+
+#reportsContainer thead tr {
     border-bottom: 2px solid #2c3e50;
-  }
-  
-  #reportsContainer th, 
-  #reportsContainer td {
+}
+
+#reportsContainer th, 
+#reportsContainer td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-  }
-  
-  /* Table Body Rows */
-  #reportsContainer tbody tr:nth-child(even) {
+}
+
+#reportsContainer tbody tr:nth-child(even) {
     background-color: #f9f9f9;
-  }
-  
-  #reportsContainer tbody tr:hover {
+}
+
+#reportsContainer tbody tr:hover {
     background-color: #f1f1f1;
-  }
-  
+}
+
+/* Container for the domain tables (CATH, DYNDOM) side by side */
+.domain-tables-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap; /* allows wrapping on smaller screens */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* "Card" style for each domain table card */
+.domain-tables-container > div {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 48%; /* each "card" about half the width on large screens */
+    box-sizing: border-box;
+}
+
+/* Domain table inside each card */
+.domain-tables-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.domain-tables-container thead {
+    background: #34495e;
+    color: #fff;
+}
+
+.domain-tables-container th, 
+.domain-tables-container td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.domain-tables-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Domain Residue Comparison Section */
+.comparison-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+.comparison-section h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.comparison-section h3 {
+    margin-top: 20px;
+    color: #333;
+}
+
+.comparison-section p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* Color-coded spans for matched/unmatched segments */
+.comparison-match {
+    background-color: #d4edda; /* light green */
+    color: #155724;
+    padding: 3px 6px;
+    border-radius: 4px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.comparison-no-match {
+    background-color: #f8d7da; /* light red/pink */
+    color: #721c24;
+    padding: 3px 6px;
+    border-radius: 4px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+/* On smaller screens, stack the domain table cards vertically */
+@media (max-width: 768px) {
+    .domain-tables-container {
+      flex-direction: column;
+    }
+    .domain-tables-container > div {
+      width: 100%;
+    }
+}
