@@ -1,75 +1,129 @@
-/* General Styles */
-body {
+/* ===========================
+   Global / Body
+   =========================== */
+   body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
-}
-
-.container {
+    line-height: 1.6;
+  }
+  
+  .container {
     width: 80%;
     margin: 0 auto;
     padding: 20px;
     text-align: center;
-}
-
-/* Header and Navigation */
-header {
-    background: #2c3e50;
+  }
+  
+  /* ===========================
+     Site Logo (Animated)
+     =========================== */
+  .site-logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    height: 120px;     /* Larger logo */
+    width: auto;       /* Keeps aspect ratio */
+    object-fit: contain;
+    border: 2px solid white;
+    padding: 5px;
+    background: white;
+    border-radius: 8px;
+    animation: logoPulse 2s infinite ease-in-out;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  
+  @keyframes logoPulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  /* Logo hover effect */
+  .site-logo:hover {
+    transform: scale(1.15) rotate(5deg);
+  }
+  
+  /* ===========================
+     Header / Navigation
+     =========================== */
+  header {
+    background: linear-gradient(to right, #2c3e50, #4b79a1); /* subtle gradient */
     color: white;
     padding: 20px 0;
     text-align: center;
-}
-
-.nav-links {
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  
+  .nav-links {
     list-style: none;
     padding: 0;
     display: flex;
     justify-content: center;
     gap: 20px;
-}
-
-.nav-links li {
+    margin: 0;
+  }
+  
+  .nav-links li {
     display: inline;
-}
-
-.nav-links a {
+  }
+  
+  .nav-links a {
     text-decoration: none;
     color: white;
     font-size: 18px;
     padding: 10px 15px;
-    transition: background 0.3s ease;
-}
-
-.nav-links a:hover {
-    background: #1a252f;
     border-radius: 5px;
-}
-
-/* Banner Image on Home Page */
-.banner {
+    transition: background 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+  }
+  
+  /* ===========================
+     Banner (Home Page)
+     =========================== */
+  .banner {
     width: 100%;
     overflow: hidden;
-}
-
-.banner img {
+  }
+  
+  .banner img {
     width: 100%;
     height: auto;
     display: block;
-}
-
-/* Sections */
-.section {
+  }
+  
+  /* ===========================
+     Sections / Cards
+     =========================== */
+  .section {
     padding: 50px 0;
     background: white;
     margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* Forms */
-form, #proteinForm {
+  }
+  
+  /* A reusable .card class for a white background, rounded corners, and shadow */
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  /* ===========================
+     Forms
+     =========================== */
+  form, #proteinForm {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -78,95 +132,88 @@ form, #proteinForm {
     border-radius: 8px;
     width: 60%;
     margin: 20px auto;
-}
-
-form input, form button, #proteinForm textarea, #proteinForm button {
+  }
+  
+  form input, form button, #proteinForm textarea, #proteinForm button {
     padding: 12px;
     margin: 10px 0;
     width: 80%;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.btn-primary, #proteinForm button {
+    font-size: 16px;
+  }
+  
+  /* ===========================
+     Buttons
+     =========================== */
+  .btn-primary, .btn-login, .btn-logout, .btn-clear, .btn-compare, #proteinForm button {
     background: #34495e;
     color: white;
     border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
-    padding: 12px;
-    border-radius: 5px;
     transition: background 0.3s;
-}
-
-.btn-primary:hover, #proteinForm button:hover {
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .btn-primary:hover, 
+  .btn-login:hover, 
+  .btn-logout:hover, 
+  .btn-clear:hover, 
+  .btn-compare:hover,
+  #proteinForm button:hover {
     background: #2c3e50;
-}
-
-.btn-login {
+  }
+  
+  /* If you want distinct colors for login/logout, override them: */
+  .btn-login {
     background: #27ae60;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background 0.3s ease;
-}
-
-.btn-login:hover {
+  }
+  .btn-login:hover {
     background: #1e8449;
-}
-
-.btn-logout {
+  }
+  .btn-logout {
     background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.btn-logout:hover {
+  }
+  .btn-logout:hover {
     background: #c0392b;
-}
-
-/* Results Display */
-#results {
+  }
+  .btn-clear {
+    background: #e67e22;
+  }
+  .btn-clear:hover {
+    background: #d35400;
+  }
+  
+  /* ===========================
+     Results Display
+     =========================== */
+  #results {
     margin-top: 20px;
     padding: 20px;
-}
-
-/* Clear Reports Button */
-.btn-clear {
-    background: #e67e22;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.btn-clear:hover {
-    background: #d35400;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
+  }
+  
+  /* ===========================
+     Responsive
+     =========================== */
+  @media (max-width: 768px) {
     .nav-links {
-        flex-direction: column;
-        align-items: center;
+      flex-direction: column;
+      align-items: center;
     }
     .container, form, #proteinForm {
-        width: 90%;
+      width: 90%;
     }
-}
-
-/* Table Container for Reports (Reports Page) */
-#reportsContainer table {
+  }
+  
+  /* ===========================
+     Reports Table Container
+     =========================== */
+  #reportsContainer table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px auto;
@@ -175,127 +222,185 @@ form input, form button, #proteinForm textarea, #proteinForm button {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-#reportsContainer thead {
+  }
+  
+  #reportsContainer thead {
     background: #34495e;
     color: #fff;
-}
-
-#reportsContainer thead tr {
+  }
+  
+  #reportsContainer thead tr {
     border-bottom: 2px solid #2c3e50;
-}
-
-#reportsContainer th, 
-#reportsContainer td {
+  }
+  
+  #reportsContainer th, 
+  #reportsContainer td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-}
-
-#reportsContainer tbody tr:nth-child(even) {
+  }
+  
+  #reportsContainer tbody tr:nth-child(even) {
     background-color: #f9f9f9;
-}
-
-#reportsContainer tbody tr:hover {
+  }
+  
+  #reportsContainer tbody tr:hover {
     background-color: #f1f1f1;
-}
-
-/* Container for the domain tables (CATH, DYNDOM) side by side */
-.domain-tables-container {
+  }
+  
+  /* ===========================
+     Domain Tables (side by side)
+     =========================== */
+  .domain-tables-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    flex-wrap: wrap; /* allows wrapping on smaller screens */
+    flex-wrap: wrap; /* wrap on small screens */
     gap: 20px;
     margin-top: 20px;
-}
-
-/* "Card" style for each domain table card */
-.domain-tables-container > div {
+  }
+  
+  .domain-tables-container > div {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     padding: 20px;
-    width: 48%; /* each "card" about half the width on large screens */
+    width: 48%;
     box-sizing: border-box;
-}
-
-/* Domain table inside each card */
-.domain-tables-container table {
+  }
+  
+  .domain-tables-container table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-}
-
-.domain-tables-container thead {
+  }
+  
+  .domain-tables-container thead {
     background: #34495e;
     color: #fff;
-}
-
-.domain-tables-container th, 
-.domain-tables-container td {
+  }
+  
+  .domain-tables-container th, 
+  .domain-tables-container td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-}
-
-.domain-tables-container tbody tr:nth-child(even) {
+  }
+  
+  .domain-tables-container tbody tr:nth-child(even) {
     background-color: #f9f9f9;
-}
-
-/* Domain Residue Comparison Section */
-.comparison-section {
+  }
+  
+  /* Domain Residue Comparison Section */
+  .comparison-section {
     margin-top: 30px;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: left;
-}
-
-.comparison-section h2 {
+  }
+  
+  .comparison-section h2 {
     margin-top: 0;
     color: #2c3e50;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
-}
-
-.comparison-section h3 {
+  }
+  
+  .comparison-section h3 {
     margin-top: 20px;
     color: #333;
-}
-
-.comparison-section p {
+  }
+  
+  .comparison-section p {
     margin: 8px 0;
     font-size: 16px;
-}
-
-/* Color-coded spans for matched/unmatched segments */
-.comparison-match {
+  }
+  
+  .comparison-match {
     background-color: #d4edda; /* light green */
     color: #155724;
     padding: 3px 6px;
     border-radius: 4px;
     margin-right: 5px;
     display: inline-block;
-}
-
-.comparison-no-match {
+  }
+  
+  .comparison-no-match {
     background-color: #f8d7da; /* light red/pink */
     color: #721c24;
     padding: 3px 6px;
     border-radius: 4px;
     margin-right: 5px;
     display: inline-block;
-}
-
-/* On smaller screens, stack the domain table cards vertically */
-@media (max-width: 768px) {
+  }
+  
+  /* Stack domain tables on small screens */
+  @media (max-width: 768px) {
     .domain-tables-container {
       flex-direction: column;
     }
     .domain-tables-container > div {
       width: 100%;
     }
-}
+  }
+  
+  /* ===========================
+     Two-column layout for Home Page main content
+     =========================== */
+  .main-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    box-sizing: border-box;
+  }
+  
+  /* Card style for the left and right columns */
+  .left-column, .right-column {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    flex: 1;
+    min-width: 300px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .left-column h2, .right-column h2 {
+    margin-top: 0;
+    color: #2c3e50;
+  }
+  
+  /* Compare button styling for home page */
+  .btn-compare {
+    background: #34495e;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+  }
+  
+  .btn-compare:hover {
+    background: #2c3e50;
+  }
+  
+  /* Stack the columns vertically on small screens */
+  @media (max-width: 768px) {
+    .main-content {
+      flex-direction: column;
+    }
+    .left-column, .right-column {
+      width: 100%;
+    }
+  }
+  

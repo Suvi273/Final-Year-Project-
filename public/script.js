@@ -239,12 +239,12 @@ async function compareProteins() {
   function saveReport(results, inputs) {
     let reports = JSON.parse(localStorage.getItem("reports")) || [];
   
+    // inputs might contain { pdbCode, chainId }
     const newReport = {
       timestamp: new Date().toLocaleString(),
-      inputs: inputs,
-      resultsSummary: Array.isArray(results) && results.length > 0
-        ? `${results.length} record(s)`
-        : "No records"
+      pdbCode: inputs.pdbCode,
+      chainId: inputs.chainId,
+      recordCount: Array.isArray(results) ? results.length : 0
     };
   
     reports.push(newReport);
